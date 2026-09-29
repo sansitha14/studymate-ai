@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StudyMate AI — Learn Anything, Your Way</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#20242b;
+    --paper:#eef1f6;
+    --paper-card:#ffffff;
+    --navy:#22314d;
+    --navy-deep:#151d2e;
+    --gold:#f2b134;
+    --leaf:#4c956c;
+    --line:#d8dee8;
+    --muted:#5b6472;
+    --danger:#c1503f;
+    font-family:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Source Serif 4', Georgia, serif;
+    margin:0 0 .4em 0;
+    color:var(--navy-deep);
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px 80px;}
+
+  /* Header */
+  header.hero{
+    background:linear-gradient(180deg,var(--navy) 0%, var(--navy-deep) 100%);
+    color:#fff;
+    padding:44px 20px 56px;
+  }
+  header.hero .wrap{padding:0 20px;}
+  .brandline{display:flex;align-items:center;gap:10px;margin-bottom:22px;}
+  .brand-badge{
+    width:36px;height:36px;border-radius:9px;
+    background:var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Source Serif 4',serif;font-weight:700;color:var(--navy-deep);font-size:18px;
+  }
+  .brandname{font-weight:600;letter-spacing:.2px;color:#fff;}
+  header.hero h1{color:#fff;font-size:clamp(28px,4.5vw,42px);max-width:560px;line-height:1.15;}
+  header.hero p{color:#c7d0e0;max-width:480px;font-size:16px;margin:0;}
+  .streak-pill{
+    display:inline-flex;gap:8px;align-items:center;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.18);
+    padding:8px 14px;border-radius:999px;
+    font-size:14px;color:#e9edf5;margin-top:22px;
+  }
+  .streak-pill b{color:var(--gold);}
+
+  /* Cards */
+  .card{
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:26px;
+    margin-top:-28px;
+    position:relative;
+    z-index:2;
+  }
+  .card + .card{margin-top:22px;}
+  .card h2{font-size:20px;}
+  .section-label{
+    font-size:12px;color:var(--muted);font-weight:600;
+    margin-bottom:10px;
+  }
+
+  /* Choice groups */
+  .choice-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;}
+  .choice-btn{
+    border:1.5px solid var(--line);
+    background:#fff;
+    padding:9px 16px;
+    border-radius:9px;
+    font-size:14px;font-weight:500;
+    cursor:pointer;color:var(--ink);
+    transition:border-color .15s, background .15s;
+  }
+  .choice-btn:hover{border-color:var(--navy);}
+  .choice-btn.active{
+    background:var(--navy);
+    border-color:var(--navy);
+    color:#fff;
+  }
+  label.field-label{
+    display:block;font-size:13px;font-weight:600;color:var(--navy-deep);margin:16px 0 6px;
+  }
+  select, input[type=text], textarea{
+    width:100%;
+    border:1.5px solid var(--line);
+    border-radius:9px;
+    padding:11px 13px;
+    font-size:15px;
+    font-family:inherit;
+    color:var(--ink);
+    background:#fff;
+  }
+  select:focus, input:focus, textarea:focus{outline:2px solid var(--navy); outline-offset:1px;}
+  textarea{resize:vertical;min-height:70px;}
+
+  .btn{
+    border:none;border-radius:9px;
+    padding:12px 22px;
+    font-size:15px;font-weight:600;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .btn-primary{background:var(--navy);color:#fff;}
+  .btn-primary:hover{background:var(--navy-deep);}
+  .btn-primary:disabled{background:#9aa6ba;cursor:not-allowed;}
+  .btn-ghost{background:#fff;border:1.5px solid var(--line);color:var(--navy-deep);}
+  .btn-ghost:hover{border-color:var(--navy);}
+  .btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;}
+
+  .demo-flag{
+    display:inline-block;
+    background:#fdf1da;color:#8a5a10;
+    border:1px solid #f0d4a0;
+    font-size:12px;font-weight:600;
+    padding:4px 10px;border-radius:7px;
+    margin-bottom:14px;
+  }
+
+  .explanation{
+    background:#f8f6ef;
+    border-left:4px solid var(--gold);
+    padding:18px 20px;border-radius:0 8px 8px 0;
+    font-size:15.5px;white-space:pre-wrap;
+    display:none;
+  }
+  .explanation.show{display:block;}
+  .followup-block{margin-top:16px;display:none;}
+  .followup-block.show{display:block;}
+  .followup-answer{
+    background:#eef3ee;border-left:4px solid var(--leaf);
+    padding:16px 18px;border-radius:0 8px 8px 0;
+    margin-top:10px;font-size:15px;white-space:pre-wrap;
+    display:none;
+  }
+  .followup-answer.show{display:block;}
+
+  .resource-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;}
+  .resource-list a{
+    display:flex;align-items:center;gap:10px;
+    text-decoration:none;color:var(--navy-deep);
+    padding:11px 14px;border:1px solid var(--line);border-radius:9px;
+    font-size:14px;font-weight:500;
+  }
+  .resource-list a:hover{border-color:var(--navy);background:#f5f7fb;}
+  .resource-list .tag{
+    font-size:11px;background:var(--navy);color:#fff;padding:3px 8px;border-radius:6px;
+  }
+
+  .quiz-item{border:1px solid var(--line);border-radius:9px;padding:14px 16px;margin-bottom:10px;}
+  .quiz-item .qtext{font-weight:600;margin-bottom:8px;}
+  .quiz-options{display:flex;flex-direction:column;gap:6px;}
+  .quiz-options label{
+    font-size:14px;display:flex;gap:8px;align-items:flex-start;cursor:pointer;
+  }
+  .quiz-feedback{font-size:13px;margin-top:8px;font-weight:600;display:none;}
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.correct{color:var(--leaf);}
+  .quiz-feedback.wrong{color:var(--danger);}
+
+  .progress-stats{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
+  .stat{
+    flex:1;min-width:120px;
+    background:#f5f7fb;border-radius:9px;padding:14px;
+    text-align:center;
+  }
+  .stat b{display:block;font-size:24px;font-family:'Source Serif 4',serif;color:var(--navy-deep);}
+  .stat span{font-size:12px;color:var(--muted);}
+  .history-list{list-style:none;padding:0;margin:0;font-size:13.5px;}
+  .history-list li{
+    padding:9px 0;border-bottom:1px solid var(--line);
+    display:flex;justify-content:space-between;color:var(--muted);
+  }
+  .history-list li b{color:var(--ink);font-weight:600;}
+  .empty-hint{font-size:13.5px;color:var(--muted);}
+
+  footer{
+    text-align:center;font-size:12.5px;color:var(--muted);padding:30px 20px 10px;
+  }
+  @media (max-width:520px){
+    .card{padding:20px;border-radius:12px;}
+    header.hero{padding:36px 16px 50px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="brandline">
+      <div class="brand-badge">S</div>
+      <span class="brandname">StudyMate AI</span>
+    </div>
+    <h1>Ask anything. Learn it your way.</h1>
+    <p>Pick your class, subject, and topic — get an explanation pitched exactly at your level, then dig deeper with follow-ups, audio, and practice questions.</p>
+    <div class="streak-pill">🔥 <b id="streakCount">0</b> topics studied so far</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- SETUP CARD -->
+  <div class="card">
+    <div class="section-label">STEP 1 — YOUR LEVEL</div>
+    <div class="choice-row" id="levelRow">
+      <button class="choice-btn" data-level="Class 6–10">Class 6–10</button>
+      <button class="choice-btn" data-level="Class 11–12">Class 11–12</button>
+      <button class="choice-btn" data-level="College">College</button>
+    </div>
+
+    <div id="streamBlock" style="display:none;">
+      <div class="section-label">STEP 2 — YOUR STREAM</div>
+      <div class="choice-row" id="streamRow">
+        <button class="choice-btn" data-stream="Science">Science</button>
+        <button class="choice-btn" data-stream="Commerce">Commerce</button>
+        <button class="choice-btn" data-stream="Arts / Humanities">Arts / Humanities</button>
+        <button class="choice-btn" data-stream="Engineering">Engineering</button>
+        <button class="choice-btn" data-stream="Other">Other</button>
+      </div>
+    </div>
+
+    <label class="field-label">Subject</label>
+    <select id="subjectSelect">
+      <option value="">— Select a subject —</option>
+      <option>Mathematics</option>
+      <option>Physics</option>
+      <option>Chemistry</option>
+      <option>Biology</option>
+      <option>Computer Science</option>
+      <option>English</option>
+      <option>History</option>
+      <option>Economics</option>
+      <option>Other (type below)</option>
+    </select>
+    <input type="text" id="subjectOther" placeholder="Type your subject" style="margin-top:8px;display:none;">
+
+    <label class="field-label">What do you want to understand? (any topic — even niche ones)</label>
+    <textarea id="topicInput" placeholder="e.g. Why does refraction happen, Laplace transforms, the French Revolution's causes..."></textarea>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="askBtn" disabled>Explain this to me</button>
+    </div>
+  </div>
+
+  <!-- EXPLANATION CARD -->
+  <div class="card" id="explainCard" style="display:none;">
+    <h2>Explanation</h2>
+    <div class="demo-flag" id="explainFlag">Powered by AI — generated fresh for your topic and level.</div>
+    <div class="explanation" id="explanationBox"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="simplerBtn">Explain more simply</button>
+      <button class="btn btn-ghost" id="voiceBtn">🔊 Read aloud</button>
+      <button class="btn btn-ghost" id="stopVoiceBtn" style="display:none;">⏹ Stop</button>
+    </div>
+
+    <div class="followup-block" id="followupBlock">
+      <label class="field-label">Ask a follow-up question</label>
+      <input type="text" id="followupInput" placeholder="e.g. Can you give a real-life example?">
+      <div class="btn-row">
+        <button class="btn btn-primary" id="followupBtn">Ask follow-up</button>
+      </div>
+      <div class="followup-answer" id="followupAnswer"></div>
+    </div>
+  </div>
+
+  <!-- RESOURCES CARD -->
+  <div class="card" id="resourceCard" style="display:none;">
+    <h2>Explore more</h2>
+    <ul class="resource-list" id="resourceList"></ul>
+  </div>
+
+  <!-- PRACTICE CARD -->
+  <div class="card" id="quizCard" style="display:none;">
+    <h2>Practice questions</h2>
+    <div class="demo-flag">Powered by AI — generated fresh for this topic.</div>
+    <div id="quizList"></div>
+  </div>
+
+  <!-- PROGRESS CARD -->
+  <div class="card">
+    <h2>Your progress</h2>
+    <div class="progress-stats">
+      <div class="stat"><b id="statTopics">0</b><span>Topics studied</span></div>
+      <div class="stat"><b id="statSubjects">0</b><span>Subjects covered</span></div>
+      <div class="stat"><b id="statQuiz">0</b><span>Practice questions answered</span></div>
+    </div>
+    <div class="section-label">RECENT ACTIVITY</div>
+    <ul class="history-list" id="historyList"></ul>
+    <p class="empty-hint" id="emptyHint">Nothing studied yet — ask your first question above and it'll show up here.</p>
+  </div>
+
+</div>
+
+<footer>
+  StudyMate AI — the frontend calls its own backend route (/api/ai), which holds one free Gemini
+  API key on the server. Any visitor can use the site with no account of their own — see api/ai.js
+  and the setup steps at the top of that file.
+</footer>
+
+<script>
+(function(){
+  // ---------- State ----------
+  let state = { level:null, stream:null, subject:null, topic:null, explanation:'', simpleMode:false };
+  let progress = loadProgress();
+  let utterance = null;
+
+  function loadProgress(){
+    try{
+      const raw = localStorage.getItem('studymate_progress');
+      return raw ? JSON.parse(raw) : { entries: [], quizAnswered: 0 };
+    }catch(e){ return { entries: [], quizAnswered: 0 }; }
+  }
+  function saveProgress(){
+    try{ localStorage.setItem('studymate_progress', JSON.stringify(progress)); }catch(e){}
+  }
+
+  // ---------- Level / stream selection ----------
+  const levelRow = document.getElementById('levelRow');
+  const streamBlock = document.getElementById('streamBlock');
+  const streamRow = document.getElementById('streamRow');
+
+  levelRow.addEventListener('click', e=>{
+    const btn = e.target.closest('.choice-btn'); if(!btn) return;
+    [...levelRow.children].forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    state.level = btn.dataset.level;
+    streamBlock.style.display = (state.level === 'Class 6–10') ? 'none' : 'block';
+    if(state.level === 'Class 6–10') state.stream = null;
+    checkReady();
+  });
+  streamRow.addEventListener('click', e=>{
+    const btn = e.target.closest('.choice-btn'); if(!btn) return;
+    [...streamRow.children].forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    state.stream = btn.dataset.stream;
+    checkReady();
+  });
+
+  // ---------- Subject ----------
+  const subjectSelect = document.getElementById('subjectSelect');
+  const subjectOther = document.getElementById('subjectOther');
+  subjectSelect.addEventListener('change', ()=>{
+    if(subjectSelect.value === 'Other (type below)'){
+      subjectOther.style.display = 'block';
+      state.subject = subjectOther.value.trim();
+    } else {
+      subjectOther.style.display = 'none';
+      state.subject = subjectSelect.value;
+    }
+    checkReady();
+  });
+  subjectOther.addEventListener('input', ()=>{
+    state.subject = subjectOther.value.trim();
+    checkReady();
+  });
+
+  // ---------- Topic ----------
+  const topicInput = document.getElementById('topicInput');
+  topicInput.addEventListener('input', ()=>{
+    state.topic = topicInput.value.trim();
+    checkReady();
+  });
+
+  function checkReady(){
+    const ready = state.level && state.subject && state.topic;
+    document.getElementById('askBtn').disabled = !ready;
+  }
+
+  // ---------- AI calls (via our own backend, so any visitor can use it — no account needed) ----------
+  // The frontend never talks to an AI provider directly. It calls our own /api/ai route,
+  // which is a small server-side function (see api/ai.js) holding one free Gemini API key
+  // that YOU (the site owner) set up once. Every visitor uses that same key transparently —
+  // they never see it and never need an account of their own.
+  async function callBackend(payload){
+    const res = await fetch('/api/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Request failed');
+    return data;
+  }
+
+  async function generateExplanation(topic, subject, level, simple){
+    try{
+      const data = await callBackend({ type:'explain', topic, subject, level, simple });
+      return data.text;
+    }catch(e){
+      return `Couldn't reach the AI right now (${e.message}). Check that the site's backend is set up and deployed, then try again.`;
+    }
+  }
+
+  async function generateFollowup(question, topic, subject, level){
+    try{
+      const data = await callBackend({ type:'followup', topic, subject, level, question });
+      return data.text;
+    }catch(e){
+      return `Couldn't reach the AI right now (${e.message}). Check that the site's backend is set up and deployed, then try again.`;
+    }
+  }
+
+  async function generatePractice(topic, subject, level){
+    try{
+      const data = await callBackend({ type:'practice', topic, subject, level });
+      if(Array.isArray(data.questions) && data.questions.length) return data.questions;
+      throw new Error('empty');
+    }catch(e){
+      return [{ q:`Couldn't generate questions right now — try asking again.`, options:['OK'], correct:0 }];
+    }
+  }
+
+  // ---------- Ask button ----------
+  const explainCard = document.getElementById('explainCard');
+  const explanationBox = document.getElementById('explanationBox');
+  const resourceCard = document.getElementById('resourceCard');
+  const quizCard = document.getElementById('quizCard');
+
+  const askBtn = document.getElementById('askBtn');
+  const simplerBtn = document.getElementById('simplerBtn');
+  const followupBtn = document.getElementById('followupBtn');
+
+  askBtn.addEventListener('click', async ()=>{
+    state.simpleMode = false;
+    explainCard.style.display = 'block';
+    resourceCard.style.display = 'block';
+    quizCard.style.display = 'block';
+    explanationBox.textContent = 'Thinking through a clear explanation...';
+    explanationBox.classList.add('show');
+    document.getElementById('quizList').innerHTML = '<p class="empty-hint">Generating practice questions...</p>';
+    document.getElementById('followupBlock').classList.add('show');
+    document.getElementById('followupAnswer').classList.remove('show');
+    askBtn.disabled = true; simplerBtn.disabled = true;
+    explainCard.scrollIntoView({behavior:'smooth', block:'start'});
+
+    renderResources(state.topic, state.subject);
+
+    const [explanation, quiz] = await Promise.all([
+      generateExplanation(state.topic, state.subject, state.level, false),
+      generatePractice(state.topic, state.subject, state.level)
+    ]);
+    state.explanation = explanation;
+    explanationBox.textContent = explanation;
+    renderQuiz(quiz);
+
+    recordProgress(state.topic, state.subject, state.level);
+    askBtn.disabled = false; simplerBtn.disabled = false;
+  });
+
+  simplerBtn.addEventListener('click', async ()=>{
+    state.simpleMode = true;
+    simplerBtn.disabled = true;
+    const prev = explanationBox.textContent;
+    explanationBox.textContent = 'Simplifying...';
+    state.explanation = await generateExplanation(state.topic, state.subject, state.level, true);
+    explanationBox.textContent = state.explanation;
+    simplerBtn.disabled = false;
+  });
+
+  // ---------- Follow-up ----------
+  followupBtn.addEventListener('click', async ()=>{
+    const q = document.getElementById('followupInput').value.trim();
+    if(!q) return;
+    followupBtn.disabled = true;
+    const ans = document.getElementById('followupAnswer');
+    ans.textContent = 'Thinking...';
+    ans.classList.add('show');
+    ans.textContent = await generateFollowup(q, state.topic, state.subject, state.level);
+    followupBtn.disabled = false;
+  });
+
+  // ---------- Voice reading ----------
+  const voiceBtn = document.getElementById('voiceBtn');
+  const stopVoiceBtn = document.getElementById('stopVoiceBtn');
+  voiceBtn.addEventListener('click', ()=>{
+    if(!('speechSynthesis' in window)){
+      alert('Voice reading is not supported in this browser.');
+      return;
+    }
+    window.speechSynthesis.cancel();
+    utterance = new SpeechSynthesisUtterance(state.explanation);
+    utterance.rate = 0.98;
+    utterance.onend = ()=>{ stopVoiceBtn.style.display='none'; };
+    window.speechSynthesis.speak(utterance);
+    stopVoiceBtn.style.display = 'inline-block';
+  });
+  stopVoiceBtn.addEventListener('click', ()=>{
+    window.speechSynthesis.cancel();
+    stopVoiceBtn.style.display = 'none';
+  });
+
+  // ---------- Resources ----------
+  function renderResources(topic, subject){
+    const query = encodeURIComponent(`${topic} ${subject} explained`);
+    const list = document.getElementById('resourceList');
+    list.innerHTML = '';
+    const items = [
+      { label:`"${topic}" — video explanations`, tag:'YouTube', url:`https://www.youtube.com/results?search_query=${query}` },
+      { label:`"${topic}" — articles & notes`, tag:'Web', url:`https://www.google.com/search?q=${query}` },
+      { label:`"${topic}" — practice problems`, tag:'Web', url:`https://www.google.com/search?q=${encodeURIComponent(topic+' '+subject+' practice problems')}` }
+    ];
+    items.forEach(it=>{
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = it.url; a.target = '_blank'; a.rel = 'noopener';
+      a.innerHTML = `<span class="tag">${it.tag}</span> ${it.label}`;
+      li.appendChild(a);
+      list.appendChild(li);
+    });
+  }
+
+  // ---------- Practice quiz ----------
+  function renderQuiz(qs){
+    const box = document.getElementById('quizList');
+    box.innerHTML = '';
+    qs.forEach((item, idx)=>{
+      const div = document.createElement('div');
+      div.className = 'quiz-item';
+      const optsHtml = item.options.map((opt,i)=>`
+        <label>
+          <input type="radio" name="q${idx}" value="${i}">
+          ${opt}
+        </label>`).join('');
+      div.innerHTML = `<div class="qtext">${idx+1}. ${item.q}</div>
+        <div class="quiz-options">${optsHtml}</div>
+        <div class="quiz-feedback" id="fb${idx}"></div>`;
+      box.appendChild(div);
+      div.querySelectorAll('input[type=radio]').forEach(inp=>{
+        inp.addEventListener('change', ()=>{
+          const fb = document.getElementById('fb'+idx);
+          const chosen = parseInt(inp.value,10);
+          fb.classList.remove('correct','wrong');
+          if(chosen === item.correct){
+            fb.textContent = 'Correct!';
+            fb.classList.add('correct','show');
+          } else {
+            fb.textContent = 'Not quite — try reviewing the explanation above.';
+            fb.classList.add('wrong','show');
+          }
+          progress.quizAnswered = (progress.quizAnswered||0) + 1;
+          saveProgress();
+          renderProgress();
+        });
+      });
+    });
+  }
+
+  // ---------- Progress tracking ----------
+  function recordProgress(topic, subject, level){
+    progress.entries.push({ topic, subject, level, date: new Date().toISOString() });
+    saveProgress();
+    renderProgress();
+  }
+
+  function renderProgress(){
+    const entries = progress.entries || [];
+    document.getElementById('streakCount').textContent = entries.length;
+    document.getElementById('statTopics').textContent = entries.length;
+    document.getElementById('statSubjects').textContent = new Set(entries.map(e=>e.subject)).size;
+    document.getElementById('statQuiz').textContent = progress.quizAnswered || 0;
+
+    const list = document.getElementById('historyList');
+    const hint = document.getElementById('emptyHint');
+    list.innerHTML = '';
+    if(entries.length === 0){
+      hint.style.display = 'block';
+      return;
+    }
+    hint.style.display = 'none';
+    entries.slice(-6).reverse().forEach(e=>{
+      const li = document.createElement('li');
+      const d = new Date(e.date);
+      li.innerHTML = `<b>${e.topic}</b> <span>${e.subject} · ${d.toLocaleDateString()}</span>`;
+      list.appendChild(li);
+    });
+  }
+
+  renderProgress();
+})();
+</script>
+
+</body>
+</html>
