@@ -10,7 +10,7 @@
 //
 // The frontend (index.html) already calls this route — you don't need to change it.
 
-const MODEL = 'gemini-flash-latest'; // free-tier friendly, fast, good quality
+const MODEL = 'gemini-2.5-flash-lite'; // free-tier friendly, fast, good quality
 
 async function callGemini(prompt) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
