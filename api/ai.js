@@ -10,7 +10,7 @@
 //
 // The frontend (index.html) already calls this route — you don't need to change it.
 
-const MODEL = 'gemini-3.5-flash-lite'; // free-tier friendly, fast, good quality
+const MODEL = 'gemini-3.5-flash-lite'; // current lightweight model, good free-tier limits
 
 async function callGemini(prompt) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
@@ -67,8 +67,9 @@ export default async function handler(req, res) {
     if (type === 'practice') {
       const prompt = `Write exactly 3 multiple-choice practice questions on "${topic}" (${subject}) for a ${level} student. ` +
         `Respond with ONLY raw JSON, no markdown fences, no preamble, in this exact shape: ` +
-        `[{"q":"question text","options":["a","b","c","d"],"correct":0}, ...] ` +
-        `"correct" is the zero-based index of the right option in "options". Each question needs 4 options.`;
+        `[{"q":"question text","options":["a","b","c","d"],"correct":0,"explanation":"why the correct option is right, and briefly why each wrong option is a common mistake"}, ...] ` +
+        `"correct" is the zero-based index of the right option in "options". Each question needs 4 options. ` +
+        `Keep each "explanation" under 60 words, plain text, no markdown.`;
       const raw = await callGemini(prompt);
       const cleaned = raw.replace(/```json|```/g, '').trim();
       const questions = JSON.parse(cleaned);

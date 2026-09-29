@@ -171,7 +171,7 @@
   .quiz-options label{
     font-size:14px;display:flex;gap:8px;align-items:flex-start;cursor:pointer;
   }
-  .quiz-feedback{font-size:13px;margin-top:8px;font-weight:600;display:none;}
+  .quiz-feedback{font-size:13.5px;margin-top:8px;font-weight:500;line-height:1.5;display:none;}
   .quiz-feedback.show{display:block;}
   .quiz-feedback.correct{color:var(--leaf);}
   .quiz-feedback.wrong{color:var(--danger);}
@@ -548,11 +548,15 @@
           const fb = document.getElementById('fb'+idx);
           const chosen = parseInt(inp.value,10);
           fb.classList.remove('correct','wrong');
+          const why = item.explanation ? item.explanation : '';
           if(chosen === item.correct){
-            fb.textContent = 'Correct!';
+            fb.textContent = why ? `Correct! ${why}` : 'Correct!';
             fb.classList.add('correct','show');
           } else {
-            fb.textContent = 'Not quite — try reviewing the explanation above.';
+            const correctText = item.options[item.correct];
+            fb.textContent = why
+              ? `Not quite — the right answer is "${correctText}". ${why}`
+              : `Not quite — the right answer is "${correctText}".`;
             fb.classList.add('wrong','show');
           }
           progress.quizAnswered = (progress.quizAnswered||0) + 1;
